@@ -1,6 +1,6 @@
 ---
-title: "Sample Report - Data Science Capstone"
-author: "Student name"
+title: "Practical Implementations of Principal Component Analysis"
+author: "Shivani"
 date: '`r Sys.Date()`'
 format:
   html:
@@ -16,92 +16,324 @@ editor:
   markdown: 
     wrap: 72
 ---
+[View Slideshow](slides.html)
 
-## Introduction
+**Introduction**
 
-### What is "mehtod"?
+Principal Component Analysis (PCA) is a pivotal multivariate data analysis technique employed to simplify complex datasets by reducing their dimensionality while retaining critical information. Originally introduced by Pearson (1901) and further developed by Hotelling (1933), PCA has become an essential tool in statistical analysis and data science for its ability to identify patterns and relationships within high-dimensional data【6†source】【7†source】.
 
-This is an introduction to LASSO regression, which is a non-parametric
-estimator that estimates the conditional expectation of two variables
-which is random. The goal of a kernel regression is to discover the
-non-linear relationship between two random variables. To discover the
-non-linear relationship, kernel estimator or kernel smoothing is the
-main method to estimate the curve for non-parametric statistics. In
-kernel estimator, weight function is known as kernel function
-[@efr2008]. Cite this paper [@bro2014principal]. The GEE [@wang2014].
-The PCA [@daffertshofer2004pca]
+PCA leverages the mathematical framework of linear algebra, specifically the eigen-decomposition of covariance or correlation matrices, to transform a set of possibly correlated variables into a smaller number of uncorrelated variables known as principal components. This transformation is achieved by identifying the eigenvectors and eigenvalues of the matrix, where eigenvectors define the directions of maximum variance and eigenvalues indicate the magnitude of variance along these directions (Hotelling, 1933)【6†source】【7†source】.
 
-This is my work and I want to add more work...
+A significant advantage of PCA is its capability to handle large datasets, where visualization and interpretation of data can be challenging. By projecting data onto a new coordinate system defined by principal components, PCA simplifies the dataset’s structure, facilitating easier interpretation and visualization (Preisendorfer & Mobley, 1988)【7†source】. This reduction not only aids in compressing the data and removing noise but also highlights the most significant variations and relationships within the dataset【6†source】.
+
+The primary objective of PCA is to identify and retain the most influential components that account for the majority of the dataset’s variance. The method involves solving an eigenvalue-eigenvector problem for the covariance matrix of the data, enabling the selection of principal components with the highest eigenvalues for dimensionality reduction (Anderson, 1963)【7†source】. By focusing on these principal components, researchers can efficiently reduce data complexity without substantial information loss (Rao, 1964)【7†source】.
+
+PCA's applicability extends across numerous fields, including image compression, signal processing, and bioinformatics, underscoring its versatility and practical importance (Gower, 1966; Jeffers, 1967)【7†source】. As this paper explores the mathematical foundations and applications of PCA, it aims to provide a comprehensive understanding of its capabilities and limitations, demonstrating its role as a powerful tool for data analysis【7†source】.
 
 ### Related work
 
-This section is going to cover the literature review...
+The development of Principal Component Analysis (PCA) can be traced back to the foundational work of Pearson (1901), who introduced the concept of reducing dimensionality in multivariate datasets by identifying linear projections that maximize variance【7†source】. Pearson's pioneering work set the stage for further advancements, notably by Hotelling (1933), who formalized the method of principal components through an algebraic approach. Hotelling’s work introduced the concept of eigenvectors and eigenvalues in the context of data variance and highlighted the utility of PCA in extracting significant features from complex datasets【6†source】【7†source】.
+
+In subsequent decades, PCA has been widely adopted across various disciplines, with significant contributions to its theoretical and practical applications. Anderson (1963) explored the asymptotic properties of PCA, examining the distributions of sample principal components and contributing to the theoretical foundation of the technique【7†source】. This work laid the groundwork for more robust statistical interpretations and applications of PCA in diverse fields.
+
+The practical applications of PCA have also been extensively explored. Jeffers (1967) provided empirical case studies demonstrating PCA's utility beyond simple dimensionality reduction, highlighting its effectiveness in real-world data analysis scenarios【7†source】. These applications include fields as varied as meteorology, oceanography, and genetics, where PCA aids in uncovering hidden patterns and structures within data【7†source】.
+
+More recent work has focused on PCA's computational aspects and its adaptability to large-scale datasets. Preisendorfer and Mobley (1988) investigated the application of PCA in environmental sciences, illustrating its potential for analyzing complex, high-dimensional data【7†source】. This work underscores PCA's versatility and its continued relevance in addressing contemporary data challenges.
+
 
 ## Methods
 
-The common non-parametric regression model is
-$Y_i = m(X_i) + \varepsilon_i$, where $Y_i$ can be defined as the sum of
-the regression function value $m(x)$ for $X_i$. Here $m(x)$ is unknown
-and $\varepsilon_i$ some errors. With the help of this definition, we
-can create the estimation for local averaging i.e. $m(x)$ can be
-estimated with the product of $Y_i$ average and $X_i$ is near to $x$. In
-other words, this means that we are discovering the line through the
-data points with the help of surrounding data points. The estimation
-formula is printed below [@R-base]:
+While different methods can be used to determine the principal components, Singular Value Decomposition (SVD) is the most common due to its computational efficiency and numerical stability. SVD decomposes the data into three simpler matrices, making it possible to handle large datasets effectively. This decomposition allows for a more straightforward calculation of the principal components without explicitly computing the covariance matrix, which can be computationally expensive and numerically unstable. The ability to handle sparse and dense matrices further enhances its versatility and efficiency in diverse applications. These advantages make SVD a preferred method in popular programming packages, ensuring that PCA is performed quickly and accurately [@johnson2023applied].
 
-$$
-M_n(x) = \sum_{i=1}^{n} W_n (X_i) Y_i  \tag{1}
-$$ $W_n(x)$ is the sum of weights that belongs to all real numbers.
-Weights are positive numbers and small if $X_i$ is far from $x$.
+### Overview of Algorithm with SVD:  
 
-Another equation:
+1. **Standardize the data**  
+   Ensure each variable contributes equally by having a mean of zero and variance of one. This requires that the variables are continuous.
+   $$
+   X_\text{standardized} = \frac{X - \mu}{\sigma}
+   $$
+   $\mu$: mean, $\sigma$: standard deviation of each variable
 
-$$
-y_i = \beta_0 + \beta_1 X_1 +\varepsilon_i
-$$
+2. **Perform Singular Value Decomposition (SVD)**  
+  Decompose the standardized data matrix into three matrices $U$, $\Sigma$, and $V^T$.
+  $$
+  X_\text{standardized} = U \Sigma V^T
+  $$
+  $𝑈$ and $V^T$ are orthogonal matrices, so therefore $U$ and $V$ are also orthogonal. The diagonal matrix of singular values is represented by $\sigma$ with values $\sigma_i$ that are naturally sorted in descending order. Each column of $𝑉$ represents a principal component (PC) which are orthogonal to each other in the transformed feature space. The number of PC's initially generated are equivalent to the number of variables initially provided in the dataset.
+
+3. **Selection of principal components**  
+  The explained variance of each PC is represented by:
+  $$
+  \text{variance explained} = \frac{\sigma_i^2}{\sum \sigma_i^2}
+  $$
+  For each singular value $\sigma_i$ in the matrix of singular values $\Sigma$, compute $\sigma_i^2$ and calculate the individual variance. The cumulative explained variance target is specified (typically 95%) as a criteria for PC selection. Determine the number of components needs to reach the desired cumulative explained variance.
+
+4. **Transform the data**  
+  Project the data onto the selected principal components. This yields the new subspace with reduced dimensions.
+  $$
+  X_\text{transformed} = X_\text{standardized} V^T_\text{selected}
+  $$
+  where $V_\text{selected}$ contains the first number of components columns of $V$. Once the data is transformed onto the selected PC's, it is effectively reduced in dimensionality while retaining most of its original variability.
+
+
 
 ## Analysis and Results
 
-### Data and Visualization
+## Application - PCA on USDA National Nutrient data
 
-A study was conducted to determine how...
+**Dataset**
 
+Each record is for 100 grams.
 
-```{r, warning=FALSE, echo=T, message=FALSE}
-# loading packages 
-library(tidyverse)
-library(knitr)
-library(ggthemes)
-library(ggrepel)
-library(dslabs)
+The nutrient columns end with the units, so:
+
+Nutrient_g is in grams Nutrient_mg is in milligrams Nutrient_mcg is in micrograms Nutrient_USRDA is in percentage of US Recommended Daily Allows (e.g. 0.50 is 50%)
+
+#Install Libraries
+
+```{r}
+#install.packages("devtools")
+#library(devtools)
+#install_version("MASS", version = "7.3-60")  # Replace with a compatible version
+
+#install.packages("MASS")
 ```
 
-```{r, warning=FALSE, echo=TRUE}
-# Load Data
-kable(head(murders))
+**Check for highly correlated features**
 
-ggplot1 = murders %>% ggplot(mapping = aes(x=population/10^6, y=total)) 
+Removing _USRD records as the data is redundant and also selecting highly corrrelated data.
 
-  ggplot1 + geom_point(aes(col=region), size = 4) +
-  geom_text_repel(aes(label=abb)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  geom_smooth(formula = "y~x", method=lm,se = F)+
-  xlab("Populations in millions (log10 scale)") + 
-  ylab("Total number of murders (log10 scale)") +
-  ggtitle("US Gun Murders in 2010") +
-  scale_color_discrete(name = "Region")+
-      theme_bw()
-  
+```{r}
+library(MASS)
+library(factoextra)
+library(ggplot2)
+library(readr)
+
+library(dplyr)
+library(caret)
+library(tibble)
+
+url <- "https://query.data.world/s/ll77ildgnhhove7mlker3g2jw7z5qr?dws=00000"
+data <- read.csv(url, header=TRUE, stringsAsFactors=FALSE)
+str(data)
+summary(data)
 
 ```
 
-### Statistical Modeling
+```{r}
+data_omit_usrda <- data %>% dplyr::select(-contains('_USRDA'))
+
+str(data_omit_usrda)
+
+data_numeric <- data_omit_usrda %>% dplyr::select(where(is.numeric))
+
+df <- data_numeric %>% column_to_rownames('ID')
+df_desc <- df[, 1:6]
+data_numeric <- df[, -c(1:6)]
+#print(data_numeric, 15)
+
+```
+
+
+**Scale Data**
+
+-   Scale data to center and/or scale the columns of a numeric dataframe.
+-   Standardize variables to have a mean of zero and a standard deviation of one
+
+```{r}
+data_scaled <- scale(data_numeric)
+names(data_numeric)
+
+#print(data_scaled)
+cat("mean:", round(mean(data_scaled), 2), "\n")
+cat("standard dev:", round(sd(data_scaled), 2), "\n")
+
+```
+
+**Corelation check**
+
+- Check if features in the data are correlated
+
+
+```{r}
+cor(data_scaled)
+mean(cor(data_scaled))
+
+```
+
+
+**Apply Prinicipal Component Analysis**
+
+- Running PCA generated multiple Principal components
+
+- Number of Principal components will be equal to number of variables in the data.    
+
+- First few components will be important.
+
+```{r}
+pca <- prcomp(data_scaled, scale = TRUE)
+
+pca$rotation
+
+
+```
+
+```{r}
+#qplot(1:length(pca$sdev^2), pca$sdev^2 / sum(pca$sdev^2), geom="line")
+
+```
+
+```{r}
+explained_variance <- pca$sdev^2 / sum(pca$sdev^2)
+cat(explained_variance, "\n")
+cat(sum(explained_variance[1:6]), "\n")
+```
+
+**Scree Plot**
+
+-   The scree plot shows the proportion of variance explained by each principal component.
+-   This plot helps in deciding how many components to retain for further analysis.
+-   First seven components explain most of the variance, (\> 70%)
+
+```{r}
+# Visualize the PCA results
+fviz_eig(pca, addlabels = TRUE, ylim = c(0, 50))
+
+```
+
+
+**BiPlot**
 
 ```{r}
 
+col_unique <- as.character(data$FoodGroup)
+
+color_values <- setNames(rainbow(length(unique(col_unique))), unique(col_unique))
+
+
+fviz_pca_biplot(pca, geom.ind = "point", pointsize = 2.5 , col.var = "black" ,
+                col.ind =col_unique ,  repel = TRUE)+
+  scale_color_manual(name = "Food Groups", labels = unique(col_unique), values = color_values)
 ```
+
+
+**Visualization**
+
+Now let's look at which food groups are highest in each component
+
+```{r}
+pca_results <- as.data.frame(pca$x)
+pca_results$FoodGroup <- data$FoodGroup
+
+plot_top_foodgroups <- function(pca_results, component, n = 10) {
+  top_foodgroups <- pca_results %>%
+    arrange(desc(!!sym(component))) %>%
+    slice(1:n) %>%
+    count(FoodGroup, sort = TRUE)
+  
+  ggplot(top_foodgroups, aes(x = reorder(FoodGroup, n), y = n)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    labs(title = paste("Top Food Groups for", component),
+         x = "Food Group", y = "Count")
+}
+
+```
+
+**Creating dataset with pricipal components**
+
+-   Creating dataset with 7 PCs
+
+```{r}
+pca_df <- as.data.frame(pca$x[, 1:7])
+pca_df <- rownames_to_column(pca_df, var = "ID")
+names(pca_df)
+pca_new <- prcomp(pca_df[, 2:8])
+#cor(pca_df[, 2:8])
+#mean(cor(pca_df[, 2:8]))
+fviz_pca_biplot(pca_new, geom.ind = "point", pointsize = 2.5 , col.var = "black" ,
+                col.ind =col_unique ,  repel = TRUE)+
+  scale_color_manual(name = "Food Groups", labels = unique(col_unique), values = color_values)
+
+```
+
+**Analysis of PCA Components**
+
+PC1
+
+```{r}
+  component <- paste0("PC", 1)
+  print(plot_top_foodgroups(pca_results, component))
+
+```
+
+---
+
+PC2
+
+```{r}
+  component <- paste0("PC", 2)
+  print(plot_top_foodgroups(pca_results, component))
+
+```
+
+PC3
+
+```{r}
+  component <- paste0("PC", 3)
+  print(plot_top_foodgroups(pca_results, component))
+
+```
+
+PC4
+
+```{r}
+  component <- paste0("PC", 4)
+  print(plot_top_foodgroups(pca_results, component))
+
+```
+
+PC5
+
+```{r}
+  component <- paste0("PC", 5)
+  print(plot_top_foodgroups(pca_results, component))
+
+```
+
+
+
+Foods that are high in: VitC and Manganese
+
+Low in: Niacin_mg Riboflavin_mg
+
+```{r}
+vects <- pca$rotation[, 1:5]
+component_one <- vects[, 1]
+print(sort(component_one, decreasing = TRUE))
+
+```
+
+Foods that are high in: VitA and VitB12
+
+Low in: Folate and Thiamin
+
+```{r}
+
+component_two <- vects[, 2]
+print(sort(component_two, decreasing = TRUE))
+
+```
+
 
 ### Conclusion
 
-## References
+Dimensionality Reduction:
+
+-   By reducing the dataset to a few principal components, this helps in simplifying the dataset while retaining most of the important information.
+
+Top Contributing Food Groups:
+
+-   The bar plots for each of the first five principal components indicate which food groups are most influential in each component. 
+
+-   This helps in understanding the underlying structure of the data and identifying patterns or groups of foods that are similar in their nutritional profiles.
