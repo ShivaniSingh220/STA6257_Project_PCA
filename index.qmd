@@ -1,13 +1,12 @@
 ---
 title: "Practical Implementations of Principal Component Analysis"
 author: "Shivani"
-date: '`r Sys.Date()`'
+date: "2024-08-07"
 format:
   html:
     code-fold: true
 course: STA 6257 - Advanced Statistical Modeling
 bibliography: references.bib # file contains bibtex for references
-#always_allow_html: true # this allows to get PDF with HTML features
 self-contained: true
 execute: 
   warning: false
@@ -16,29 +15,24 @@ editor:
   markdown: 
     wrap: 72
 ---
+
+
 [View Slideshow](slides.html)
 
-**Introduction**
+## Introduction
 
-Principal Component Analysis (PCA) is a pivotal multivariate data analysis technique employed to simplify complex datasets by reducing their dimensionality while retaining critical information. Originally introduced by Pearson (1901) and further developed by Hotelling (1933), PCA has become an essential tool in statistical analysis and data science for its ability to identify patterns and relationships within high-dimensional data【6†source】【7†source】.
+Principal Component Analysis (PCA) is a pivotal multivariate data analysis technique employed to simplify complex datasets by reducing their dimensionality while retaining critical information. 
+PCA has become an essential tool in statistical analysis and data science for its ability to identify patterns and relationships within high-dimensional data [@Principalcomponentanalysiswithlinearalgebra].
 
-PCA leverages the mathematical framework of linear algebra, specifically the eigen-decomposition of covariance or correlation matrices, to transform a set of possibly correlated variables into a smaller number of uncorrelated variables known as principal components. This transformation is achieved by identifying the eigenvectors and eigenvalues of the matrix, where eigenvectors define the directions of maximum variance and eigenvalues indicate the magnitude of variance along these directions (Hotelling, 1933)【6†source】【7†source】.
+PCA leverages the mathematical framework of linear algebra, specifically the eigen-decomposition of covariance or correlation matrices, to transform a set of possibly correlated variables into a smaller number of uncorrelated variables known as principal components. 
 
-A significant advantage of PCA is its capability to handle large datasets, where visualization and interpretation of data can be challenging. By projecting data onto a new coordinate system defined by principal components, PCA simplifies the dataset’s structure, facilitating easier interpretation and visualization (Preisendorfer & Mobley, 1988)【7†source】. This reduction not only aids in compressing the data and removing noise but also highlights the most significant variations and relationships within the dataset【6†source】.
+This transformation is achieved by identifying the eigenvectors and eigenvalues of the matrix, where eigenvectors define the directions of maximum variance and eigenvalues indicate the magnitude of variance along these directions. [@MultivariateStatisticalDataAnalysis].
 
-The primary objective of PCA is to identify and retain the most influential components that account for the majority of the dataset’s variance. The method involves solving an eigenvalue-eigenvector problem for the covariance matrix of the data, enabling the selection of principal components with the highest eigenvalues for dimensionality reduction (Anderson, 1963)【7†source】. By focusing on these principal components, researchers can efficiently reduce data complexity without substantial information loss (Rao, 1964)【7†source】.
 
-PCA's applicability extends across numerous fields, including image compression, signal processing, and bioinformatics, underscoring its versatility and practical importance (Gower, 1966; Jeffers, 1967)【7†source】. As this paper explores the mathematical foundations and applications of PCA, it aims to provide a comprehensive understanding of its capabilities and limitations, demonstrating its role as a powerful tool for data analysis【7†source】.
+## Related work
 
-### Related work
+The development of Principal Component Analysis (PCA) can be traced back to the foundational work of Pearson (1901), who introduced the concept of reducing dimensionality in multivariate datasets by identifying linear projections that maximize variance. Pearson's pioneering work set the stage for further advancements, who formalized the method of principal components through an algebraic approach. Hotelling’s work introduced the concept of eigenvectors and eigenvalues in the context of data variance and highlighted the utility of PCA in extracting significant features from complex datasets [@bro2014principal_biplot_theoretical_preprocessing].
 
-The development of Principal Component Analysis (PCA) can be traced back to the foundational work of Pearson (1901), who introduced the concept of reducing dimensionality in multivariate datasets by identifying linear projections that maximize variance【7†source】. Pearson's pioneering work set the stage for further advancements, notably by Hotelling (1933), who formalized the method of principal components through an algebraic approach. Hotelling’s work introduced the concept of eigenvectors and eigenvalues in the context of data variance and highlighted the utility of PCA in extracting significant features from complex datasets【6†source】【7†source】.
-
-In subsequent decades, PCA has been widely adopted across various disciplines, with significant contributions to its theoretical and practical applications. Anderson (1963) explored the asymptotic properties of PCA, examining the distributions of sample principal components and contributing to the theoretical foundation of the technique【7†source】. This work laid the groundwork for more robust statistical interpretations and applications of PCA in diverse fields.
-
-The practical applications of PCA have also been extensively explored. Jeffers (1967) provided empirical case studies demonstrating PCA's utility beyond simple dimensionality reduction, highlighting its effectiveness in real-world data analysis scenarios【7†source】. These applications include fields as varied as meteorology, oceanography, and genetics, where PCA aids in uncovering hidden patterns and structures within data【7†source】.
-
-More recent work has focused on PCA's computational aspects and its adaptability to large-scale datasets. Preisendorfer and Mobley (1988) investigated the application of PCA in environmental sciences, illustrating its potential for analyzing complex, high-dimensional data【7†source】. This work underscores PCA's versatility and its continued relevance in addressing contemporary data challenges.
 
 
 ## Methods
@@ -79,9 +73,9 @@ While different methods can be used to determine the principal components, Singu
 
 ## Analysis and Results
 
-## Application - PCA on USDA National Nutrient data
+### Application - PCA on USDA National Nutrient data
 
-**Dataset**
+### Dataset
 
 Each record is for 100 grams.
 
@@ -89,9 +83,10 @@ The nutrient columns end with the units, so:
 
 Nutrient_g is in grams Nutrient_mg is in milligrams Nutrient_mcg is in micrograms Nutrient_USRDA is in percentage of US Recommended Daily Allows (e.g. 0.50 is 50%)
 
-#Install Libraries
+
 
 ```{r}
+#Install Libraries
 #install.packages("devtools")
 #library(devtools)
 #install_version("MASS", version = "7.3-60")  # Replace with a compatible version
@@ -99,7 +94,7 @@ Nutrient_g is in grams Nutrient_mg is in milligrams Nutrient_mcg is in microgram
 #install.packages("MASS")
 ```
 
-**Check for highly correlated features**
+### Check for highly correlated features
 
 Removing _USRD records as the data is redundant and also selecting highly corrrelated data.
 
@@ -135,7 +130,7 @@ data_numeric <- df[, -c(1:6)]
 ```
 
 
-**Scale Data**
+### Scale Data
 
 -   Scale data to center and/or scale the columns of a numeric dataframe.
 -   Standardize variables to have a mean of zero and a standard deviation of one
@@ -150,7 +145,7 @@ cat("standard dev:", round(sd(data_scaled), 2), "\n")
 
 ```
 
-**Corelation check**
+### Corelation check
 
 - Check if features in the data are correlated
 
@@ -162,7 +157,7 @@ mean(cor(data_scaled))
 ```
 
 
-**Apply Prinicipal Component Analysis**
+### Apply Prinicipal Component Analysis
 
 - Running PCA generated multiple Principal components
 
@@ -202,7 +197,7 @@ fviz_eig(pca, addlabels = TRUE, ylim = c(0, 50))
 ```
 
 
-**BiPlot**
+### BiPlot
 
 ```{r}
 
@@ -217,7 +212,7 @@ fviz_pca_biplot(pca, geom.ind = "point", pointsize = 2.5 , col.var = "black" ,
 ```
 
 
-**Visualization**
+### Visualization
 
 Now let's look at which food groups are highest in each component
 
@@ -240,7 +235,7 @@ plot_top_foodgroups <- function(pca_results, component, n = 10) {
 
 ```
 
-**Creating dataset with pricipal components**
+### Creating dataset with pricipal components
 
 -   Creating dataset with 7 PCs
 
@@ -257,7 +252,7 @@ fviz_pca_biplot(pca_new, geom.ind = "point", pointsize = 2.5 , col.var = "black"
 
 ```
 
-**Analysis of PCA Components**
+### Analysis of PCA Components
 
 PC1
 
@@ -325,8 +320,7 @@ print(sort(component_two, decreasing = TRUE))
 
 ```
 
-
-### Conclusion
+## Summary of Test results
 
 Dimensionality Reduction:
 
@@ -337,3 +331,18 @@ Top Contributing Food Groups:
 -   The bar plots for each of the first five principal components indicate which food groups are most influential in each component. 
 
 -   This helps in understanding the underlying structure of the data and identifying patterns or groups of foods that are similar in their nutritional profiles.
+
+
+## Conclusion
+
+
+Principal Component Analysis (PCA) is an invaluable tool in the realm of data analysis. 
+
+Through its mathematical foundation in linear algebra, PCA transforms high-dimensional data into a set of orthogonal principal components, each representing a direction of maximum variance within the dataset. [@Thecurseofdimensionality]
+
+This transformation not only simplifies data complexity but also facilitates improved interpretation and visualization, making PCA a crucial technique in different fields.
+
+Despite its strengths, PCA is not without limitations. The linear nature of PCA may not capture complex, non-linear relationships within data, and the interpretation of principal components can sometimes be challenging. 
+
+PCA remains a fundamental technique in multivariate analysis, providing essential insights into data structure and aiding in the development of robust analytical models. As the volume and complexity of data continue to grow, PCA's role in facilitating efficient data analysis and decision-making will be more critical . 
+
