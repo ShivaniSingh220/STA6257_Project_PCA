@@ -31,8 +31,9 @@ This transformation is achieved by identifying the eigenvectors and eigenvalues 
 
 ## Related work
 
-The development of Principal Component Analysis (PCA) can be traced back to the foundational work of Pearson (1901), who introduced the concept of reducing dimensionality in multivariate datasets by identifying linear projections that maximize variance. Pearson's pioneering work set the stage for further advancements, who formalized the method of principal components through an algebraic approach. Hotelling’s work introduced the concept of eigenvectors and eigenvalues in the context of data variance and highlighted the utility of PCA in extracting significant features from complex datasets [@bro2014principal_biplot_theoretical_preprocessing].
+The development of Principal Component Analysis (PCA) can be traced back to the foundational work of Pearson (1901), who introduced the concept of reducing dimensionality in multivariate datasets by identifying linear projections that maximize variance [@bro2014principal_biplot_theoretical_preprocessing]. 
 
+Pearson's pioneering work set the stage for further advancements, who formalized the method of principal components through an algebraic approach. Hotelling’s work introduced the concept of eigenvectors and eigenvalues in the context of data variance and highlighted the utility of PCA in extracting significant features from complex datasets. .
 
 
 ## Methods
